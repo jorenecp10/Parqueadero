@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eliminar Parqueadero</title>
+</head>
+<body>
+    <h1>Eliminar Parqueadero</h1>
+    <p>¿Estás seguro que deseas eliminar el parqueadero "{{ parqueadero.nombre }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Eliminar">
+    </form>
+</body>
+</html>

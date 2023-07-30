@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear Parqueadero</title>
+</head>
+<body>
+    <h1>Crear Parqueadero</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre">Nombre del Parqueadero:</label>
+        <input type="text" name="nombre" required>
+        <br>
+        <label for="cupo_maximo">Cupo Máximo:</label>
+        <input type="number" name="cupo_maximo" required>
+        <br>
+        <input type="submit" value="Crear Parqueadero">
+    </form>
+</body>
+</html>
