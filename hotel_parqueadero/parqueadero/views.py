@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Parqueadero, Vehiculo
 from django.contrib import messages
-from .forms import ParqueaderoForm
+from .forms import ParqueaderoForm,VehiculoForm
 
 
 
@@ -76,22 +76,15 @@ def ver_disponibilidad(request):
 
 @login_required
 def ingresar_vehiculo(request):
-    parqueaderos = Parqueadero.objects.all()
-
     if request.method == 'POST':
-        placa = request.POST['placa']
-        parqueadero_id = request.POST['parqueadero_id']
-        parqueadero = get_object_or_404(Parqueadero, id=parqueadero_id)
-
-        vehiculos_en_parqueadero = Vehiculo.objects.filter(parqueadero=parqueadero).count()
-        if vehiculos_en_parqueadero >= parqueadero.cupo_maximo:
-            messages.error(request, f'El parqueadero "{parqueadero.nombre}" está lleno. No se puede ingresar el vehículo.')
-        else:
-            vehiculo = Vehiculo(placa=placa, parqueadero=parqueadero)
-            vehiculo.save()
-            messages.success(request, f'Vehículo con placa "{placa}" ingresado al parqueadero "{parqueadero.nombre}".')
-
-    return render(request, 'ingresar_vehiculo.html', {'parqueaderos': parqueaderos})
+        form = VehiculoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Vehículo ingresado exitosamente.')
+            return redirect('pagina_inicio')
+    else:
+        form = VehiculoForm()
+    return render(request, 'ingresar_vehiculo.html', {'form': form})
 
 def editar_eliminar_parqueadero(request, parqueadero_id):
     parqueadero = get_object_or_404(Parqueadero, pk=parqueadero_id)
@@ -115,6 +108,9 @@ def eliminar_parqueadero(request, parqueadero_id):
         return redirect('pagina_inicio')
 
     return render(request, 'eliminar_parqueadero.html', {'parqueadero': parqueadero})
+
+@login_required
+
 
 def listar_parqueaderos(request):
     parqueaderos = Parqueadero.objects.all()
