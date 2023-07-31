@@ -5,10 +5,6 @@ from django.contrib import messages
 from .forms import ParqueaderoForm,VehiculoForm
 
 
-
-from django.shortcuts import render
-from .models import Parqueadero
-
 def pagina_inicio(request):
     parqueaderos = Parqueadero.objects.all()
 
@@ -75,15 +71,24 @@ def ver_disponibilidad(request):
     return redirect('listar_vehiculos')
 
 @login_required
+@login_required
 def ingresar_vehiculo(request):
     if request.method == 'POST':
         form = VehiculoForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Vehículo ingresado exitosamente.')
-            return redirect('pagina_inicio')
+            parqueadero = form.cleaned_data['parqueadero']
+            cupo_disponible = parqueadero.actualizar_cupo_disponible()
+
+            if cupo_disponible > 0:
+                form.save()
+                parqueadero.actualizar_cupo_disponible()  # Actualizamos el cupo disponible
+                messages.success(request, f'Vehículo ingresado exitosamente. Cupo disponible: {cupo_disponible - 1}')
+                return redirect('pagina_inicio')
+            else:
+                messages.error(request, 'No hay cupo disponible en este parqueadero.')
     else:
         form = VehiculoForm()
+
     return render(request, 'ingresar_vehiculo.html', {'form': form})
 
 def editar_eliminar_parqueadero(request, parqueadero_id):

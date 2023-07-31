@@ -10,7 +10,14 @@ class Parqueadero(models.Model):
     def __str__(self):
         return self.nombre
 
-from django.db import models
+    def actualizar_cupo_disponible(self):
+        cupo_actual = self.cupo_maximo - self.vehiculo_set.count()
+        return max(0, cupo_actual)
+    @property
+    def cupo_disponible(self):
+        return self.cupo_maximo - self.vehiculo_set.count()
+
+
 
 class Vehiculo(models.Model):
     placa = models.CharField(max_length=10)

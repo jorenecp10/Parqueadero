@@ -52,13 +52,13 @@
                 <button type="submit" class="btn btn-primary">Ingresar Vehículo</button>
             </form>
 
-            {% if messages %}
-            <ul class="mt-3">
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+         {% if messages %}
+    <ul class="mt-3">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
         </div>
     </div>
 </body>

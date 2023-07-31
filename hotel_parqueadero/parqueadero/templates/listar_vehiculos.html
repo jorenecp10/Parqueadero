@@ -33,6 +33,14 @@
         </div>
     </nav>
     <div class="container mt-5">
+             <form method="post" action="{% url 'buscar_eliminar_vehiculo' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="placa" class="form-label">Buscar vehículo por placa:</label>
+                <input type="text" name="placa" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar y Eliminar</button>
+        </form>
         <h1>Listado de Vehículos</h1>
         <table class="table table-bordered">
             <thead>
@@ -54,14 +62,7 @@
             </tbody>
         </table>
 
-        <form method="post" action="{% url 'buscar_eliminar_vehiculo' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="placa" class="form-label">Buscar vehículo por placa:</label>
-                <input type="text" name="placa" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Buscar y Eliminar</button>
-        </form>
+
 
 
         {% if messages %}
