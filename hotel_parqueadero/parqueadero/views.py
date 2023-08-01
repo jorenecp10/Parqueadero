@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Parqueadero, Vehiculo
+from django.db.models import Q
 from django.contrib import messages
 from .forms import ParqueaderoForm,VehiculoForm
 
@@ -45,7 +46,7 @@ def listar_vehiculos(request):
 def buscar_eliminar_vehiculo(request):
     if request.method == 'POST':
         placa = request.POST['placa']
-        vehiculos = Vehiculo.objects.filter(placa=placa)
+        vehiculos = Vehiculo.objects.filter(Q(placa__iexact=placa) | Q(placa__iexact=placa.upper()))
     else:
         vehiculos = Vehiculo.objects.all()
 
