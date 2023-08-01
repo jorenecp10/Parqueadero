@@ -7,18 +7,19 @@ from .forms import ParqueaderoForm,VehiculoForm
 
 def pagina_inicio(request):
     parqueaderos = Parqueadero.objects.all()
-
+    vehiculos = Vehiculo.objects.all().order_by('-fecha_ingreso')
     disponibilidad_parqueaderos = {}
     for parqueadero in parqueaderos:
         disponibilidad_parqueaderos[parqueadero.nombre] = parqueadero.cupo_maximo - parqueadero.vehiculo_set.count()
 
-    return render(request, 'pagina_inicio.html', {'disponibilidad_parqueaderos': disponibilidad_parqueaderos})
+    return render(request, 'pagina_inicio.html', {'disponibilidad_parqueaderos': disponibilidad_parqueaderos,'vehiculos': vehiculos})
+
+
+
+
 
 
 @login_required
-
-
-@user_passes_test(lambda u: u.is_superuser)
 def crear_parqueadero(request):
     if request.method == 'POST':
         nombre = request.POST['nombre']
@@ -34,15 +35,13 @@ def crear_parqueadero(request):
     return render(request, 'crear_parqueadero.html')
 
 
-@login_required
+
 def listar_vehiculos(request):
-    vehiculos = Vehiculo.objects.all()
+    vehiculos = Vehiculo.objects.all().order_by('-fecha_ingreso')  # Ordenar por fecha_ingreso en orden descendente (-)
     parqueaderos = Parqueadero.objects.all()  # Asegúrate de incluir esta línea para obtener los parqueaderos disponibles
     return render(request, 'listar_vehiculos.html', {'vehiculos': vehiculos, 'parqueaderos': parqueaderos})
 
 
-@login_required
-@login_required
 def buscar_eliminar_vehiculo(request):
     if request.method == 'POST':
         placa = request.POST['placa']
@@ -59,7 +58,7 @@ def eliminar_vehiculos(request):
 
     return redirect('buscar_eliminar_vehiculo')
 
-@login_required
+
 def ver_disponibilidad(request):
     if request.method == 'POST':
         parqueadero_id = request.POST['parqueadero_id']
@@ -70,8 +69,9 @@ def ver_disponibilidad(request):
 
     return redirect('listar_vehiculos')
 
-@login_required
-@login_required
+
+
+
 def ingresar_vehiculo(request):
     if request.method == 'POST':
         form = VehiculoForm(request.POST)
@@ -104,7 +104,7 @@ def editar_eliminar_parqueadero(request, parqueadero_id):
 
     return render(request, 'editar_eliminar_parqueadero.html', {'form': form, 'parqueadero': parqueadero})
 
-@login_required
+
 def eliminar_parqueadero(request, parqueadero_id):
     parqueadero = get_object_or_404(Parqueadero, pk=parqueadero_id)
 
@@ -114,9 +114,9 @@ def eliminar_parqueadero(request, parqueadero_id):
 
     return render(request, 'eliminar_parqueadero.html', {'parqueadero': parqueadero})
 
+
+
 @login_required
-
-
 def listar_parqueaderos(request):
     parqueaderos = Parqueadero.objects.all()
     return render(request, 'listar_parqueaderos.html', {'parqueaderos': parqueaderos})
