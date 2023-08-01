@@ -47,6 +47,14 @@
         {% else %}
         <p>No se encontraron vehículos con la placa ingresada.</p>
         {% endif %}
+        <br>
+        {% if messages %}
+                <div class="alert alert-success" role="alert">
+                    {% for message in messages %}
+                        {{ message.message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
     </div>
 
     <!-- Agrega el enlace a los archivos JavaScript de Bootstrap -->

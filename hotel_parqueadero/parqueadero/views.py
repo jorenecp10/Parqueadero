@@ -83,14 +83,15 @@ def ingresar_vehiculo(request):
             if cupo_disponible > 0:
                 form.save()
                 parqueadero.actualizar_cupo_disponible()  # Actualizamos el cupo disponible
-                messages.success(request, f'Vehículo ingresado exitosamente. Cupo disponible: {cupo_disponible - 1}')
-                return redirect('pagina_inicio')
+                messages.success(request, f'Vehículo ingresado exitosamente en {parqueadero.nombre}. Cupo disponible: {cupo_disponible - 1}')
+                return redirect('ingresar_vehiculo')
             else:
                 messages.error(request, 'No hay cupo disponible en este parqueadero.')
     else:
         form = VehiculoForm()
 
     return render(request, 'ingresar_vehiculo.html', {'form': form})
+
 
 def editar_eliminar_parqueadero(request, parqueadero_id):
     parqueadero = get_object_or_404(Parqueadero, pk=parqueadero_id)
