@@ -29,10 +29,8 @@ DEBUG = True
 # settings.py
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.34.66']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.34.66','10.0.7.26']
 
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.8']
 
 
 
@@ -87,7 +85,7 @@ WSGI_APPLICATION = 'hotel_parqueadero.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'parqueaderoDB',
+        'NAME': 'ParqueaderoDB',
         'USER': 'postgres',
         'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -119,9 +117,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
+
 
 USE_I18N = True
 

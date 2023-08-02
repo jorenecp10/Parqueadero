@@ -4,68 +4,119 @@
     <title>Página de Inicio</title>
     <!-- Agrega el enlace a Bootstrap desde una CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+    <meta http-equiv="refresh" content="30"><!-- Recarga la página cada 60 segundos (1 minuto) -->
 </head>
 <body>
+
 {% include 'navbar.html' %}
+ <br>
+         <br>
     <div class="container">
 
         <br>
-        <h2>Disponibilidad de Parqueaderos</h2>
-    <!DOCTYPE html>
-<html>
-<head>
-    <title>Disponibilidad de Parqueaderos</title>
-    <!-- Agrega el enlace a Bootstrap desde una CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-</head>
-<body>
-<div class="container mt-5">
-    <div class="row row-cols-2">
-        {% for parqueadero, disponibilidad in disponibilidad_parqueaderos.items %}
-        <div class="col mb-4">
-            <div class="card {% if disponibilidad > 0 %}bg-success{% else %}bg-danger{% endif %} text-white">
-                <div class="card-body">
-                    <h5 class="card-title">{{ parqueadero }}</h5>
-                    <p class="card-text" style="font-size: 38px">{{ disponibilidad }}</p>
+         <br>
+         <br>
+         <br>
+         <br>
+         <br>
+         <br>
+
+
+        <div class="container mt-5 fixed-top">
+             <br>
+         <br>
+            <div class="row row-cols-1 row-cols-md-2">
+                {% for parqueadero, disponibilidad in disponibilidad_parqueaderos.items %}
+                <div class="col mb-4">
+                    <div class="card {% if disponibilidad > 0 %}bg-success{% else %}bg-danger{% endif %} text-white">
+                        <div class="card-body">
+                            <h5 class="card-title text-center" style="font-family:'Lato'">DISPONIBILIDAD {{ parqueadero }}</h5>
+                            <p class="card-text text-center" style="font-size: 38px">{{ disponibilidad }}</p>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
+
     </div>
+
+
+<div class="container mt-5">
+     {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message.message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+    <form method="post">
+            {% csrf_token %}
+            <div class="mb-2">
+                <label for="placa" class="form-label">Buscar vehículo por placa:</label>
+                <input type="text" name="placa" class="form-control" required>
+            </div>
+            <div class="text-leftr">
+                <button type="submit" class="btn btn-success">Buscar</button>
+            </div>
+            <br>
+        </form>
+
+        <br>
+
+        {% if vehiculos %}
+        <form method="post" action="{% url 'eliminar_vehiculos' %}">
+            {% csrf_token %}
+
+                <br>
+                <div style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-bordered">
+        <thead>
+           <th>Placa</th>
+            <th>Propietario</th>
+            <th>Parqueadero</th>
+            <th>Fecha de Ingreso</th>
+            <th>Sacar</th>
+        </thead>
+        <tbody>
+            {% for vehiculo in vehiculos reversed %}
+           <tr>
+            <td>{{ vehiculo.placa }}</td>
+            <td>{{ vehiculo.propietario }}</td>
+            <td>{{ vehiculo.parqueadero.nombre }}</td>
+            <td>{{ vehiculo.fecha_ingreso }}</td>
+            <td><input type="checkbox" name="eliminar_vehiculo" value="{{ vehiculo.id }}"></td>
+        </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+            <br>
+             <div class="table-responsive">
+                <div class="text-left">
+                <button type="submit" class="btn btn-danger">Sacar Vehiculo</button>
+            </div>
 
-</body>
-</html>
 
-    </div>
-    <div class="container mt-5">
 
-        <h1>Listado de Vehículos</h1>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Placa</th>
-                    <th>Propietario</th>
-                    <th>Parqueadero</th>
-                    <th>Fecha de Ingreso</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for vehiculo in vehiculos %}
-                <tr>
-                    <td>{{ vehiculo.placa }}</td>
-                    <td>{{ vehiculo.propietario }}</td>
-                    <td>{{ vehiculo.parqueadero.nombre }}</td>
-                    <td>{{ vehiculo.fecha_ingreso }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        </form>
+        {% else %}
+        <p class="text-center">No se encontraron vehículos con la placa ingresada.</p>
+        {% endif %}
+
+        <br>
+
 
     </div>
+
    <!-- Agrega el enlace a Bootstrap desde una CDN -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
 
 </body>
 </html>

@@ -1,19 +1,60 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Parqueadero, Vehiculo
+from .models import Parqueadero, Vehiculo,VehiculoEliminado
+from django.shortcuts import render
 from django.db.models import Q
 from django.contrib import messages
 from .forms import ParqueaderoForm,VehiculoForm
+from django.core.exceptions import ValidationError
 
 
 def pagina_inicio(request):
     parqueaderos = Parqueadero.objects.all()
-    vehiculos = Vehiculo.objects.all().order_by('-fecha_ingreso')
+    vehiculos = Vehiculo.objects.all().order_by('fecha_ingreso')  # Ordenar desde el último vehículo ingresado
     disponibilidad_parqueaderos = {}
     for parqueadero in parqueaderos:
         disponibilidad_parqueaderos[parqueadero.nombre] = parqueadero.cupo_maximo - parqueadero.vehiculo_set.count()
+    if request.method == 'POST':
+        placa = request.POST['placa']
+        vehiculos = Vehiculo.objects.filter(Q(placa__iexact=placa) | Q(placa__iexact=placa.upper()))
+    else:
+        vehiculos = Vehiculo.objects.all()
 
-    return render(request, 'pagina_inicio.html', {'disponibilidad_parqueaderos': disponibilidad_parqueaderos,'vehiculos': vehiculos})
+    return render(request, 'pagina_inicio.html', {'disponibilidad_parqueaderos': disponibilidad_parqueaderos, 'vehiculos': vehiculos})
+def buscar_eliminar_vehiculo(request):
+    if request.method == 'POST':
+        placa = request.POST['placa']
+        vehiculos = Vehiculo.objects.filter(Q(placa__iexact=placa) | Q(placa__iexact=placa.upper()))
+    else:
+        vehiculos = Vehiculo.objects.all()
+
+    return render(request, 'pagina_inicio.html', {'vehiculos': vehiculos})
+
+def eliminar_vehiculos(request):
+    if request.method == 'POST':
+        vehiculos_a_eliminar = request.POST.getlist('eliminar_vehiculo')
+        vehiculos_eliminados = Vehiculo.objects.filter(id__in=vehiculos_a_eliminar)
+
+        for vehiculo_eliminado in vehiculos_eliminados:
+            VehiculoEliminado.objects.create(
+                placa=vehiculo_eliminado.placa,
+                propietario=vehiculo_eliminado.propietario,
+                parqueadero=vehiculo_eliminado.parqueadero,
+                fecha_ingreso=vehiculo_eliminado.fecha_ingreso
+            )
+
+        vehiculos_eliminados.delete()
+        messages.success(request, 'Los vehículos seleccionados han sido eliminados correctamente.')
+
+    return redirect('pagina_inicio')
+# views.py
+
+from django.shortcuts import render
+from .models import VehiculoEliminado
+
+def vehiculos_eliminados(request):
+    vehiculos_eliminados = VehiculoEliminado.objects.all().order_by('-fecha_eliminacion')
+    return render(request, 'vehiculos_eliminados.html', {'vehiculos_eliminados': vehiculos_eliminados})
 
 
 
@@ -43,21 +84,8 @@ def listar_vehiculos(request):
     return render(request, 'listar_vehiculos.html', {'vehiculos': vehiculos, 'parqueaderos': parqueaderos})
 
 
-def buscar_eliminar_vehiculo(request):
-    if request.method == 'POST':
-        placa = request.POST['placa']
-        vehiculos = Vehiculo.objects.filter(Q(placa__iexact=placa) | Q(placa__iexact=placa.upper()))
-    else:
-        vehiculos = Vehiculo.objects.all()
 
-    return render(request, 'buscar_eliminar_vehiculo.html', {'vehiculos': vehiculos})
-def eliminar_vehiculos(request):
-    if request.method == 'POST':
-        vehiculos_a_eliminar = request.POST.getlist('eliminar_vehiculo')
-        Vehiculo.objects.filter(id__in=vehiculos_a_eliminar).delete()
-        messages.success(request, 'Los vehículos seleccionados han sido eliminados correctamente.')
 
-    return redirect('buscar_eliminar_vehiculo')
 
 
 def ver_disponibilidad(request):
@@ -77,14 +105,19 @@ def ingresar_vehiculo(request):
     if request.method == 'POST':
         form = VehiculoForm(request.POST)
         if form.is_valid():
+            placa = form.cleaned_data['placa']
             parqueadero = form.cleaned_data['parqueadero']
             cupo_disponible = parqueadero.actualizar_cupo_disponible()
 
             if cupo_disponible > 0:
-                form.save()
-                parqueadero.actualizar_cupo_disponible()  # Actualizamos el cupo disponible
-                messages.success(request, f'Vehículo ingresado exitosamente en {parqueadero.nombre}. Cupo disponible: {cupo_disponible - 1}')
-                return redirect('ingresar_vehiculo')
+                # Verificar si ya existe un vehículo con la misma placa
+                if Vehiculo.objects.filter(Q(placa=placa) | Q(placa=placa.upper())).exists():
+                    messages.error(request, f'El vehículo con la placa "{placa}" ya está registrado.')
+                else:
+                    form.save()
+                    parqueadero.actualizar_cupo_disponible()
+                    messages.success(request, f'Vehículo ingresado exitosamente en {parqueadero.nombre}. Cupo disponible: {cupo_disponible - 1}')
+                return redirect('pagina_inicio')
             else:
                 messages.error(request, 'No hay cupo disponible en este parqueadero.')
     else:
