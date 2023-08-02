@@ -30,11 +30,12 @@ def buscar_eliminar_vehiculo(request):
 
     return render(request, 'pagina_inicio.html', {'vehiculos': vehiculos})
 
+
 def eliminar_vehiculos(request):
     if request.method == 'POST':
         vehiculos_a_eliminar = request.POST.getlist('eliminar_vehiculo')
         vehiculos_eliminados = Vehiculo.objects.filter(id__in=vehiculos_a_eliminar)
-
+        vehiculo_ids = request.POST.getlist('eliminar_vehiculo')
         for vehiculo_eliminado in vehiculos_eliminados:
             VehiculoEliminado.objects.create(
                 placa=vehiculo_eliminado.placa,
@@ -42,10 +43,13 @@ def eliminar_vehiculos(request):
                 parqueadero=vehiculo_eliminado.parqueadero,
                 fecha_ingreso=vehiculo_eliminado.fecha_ingreso
             )
-
         vehiculos_eliminados.delete()
-        messages.success(request, 'Los vehículos seleccionados han sido eliminados correctamente.')
 
+        if not vehiculo_ids:
+            messages.error(request, 'Debe seleccionar al menos un vehículo para sacar.')
+        else:
+            Vehiculo.objects.filter(id__in=vehiculo_ids).delete()
+            messages.success(request, 'Los vehículos seleccionados han sido sacados exitosamente.')
     return redirect('pagina_inicio')
 # views.py
 
@@ -71,7 +75,7 @@ def crear_parqueadero(request):
             parqueadero = Parqueadero(nombre=nombre, cupo_maximo=cupo_maximo)
             parqueadero.save()
             messages.success(request, f'Parqueadero "{nombre}" creado correctamente.')
-            return redirect('listar_vehiculos')
+            return redirect('pagina_inicio')
 
         messages.error(request, f'El parqueadero "{nombre}" ya existe.')
     return render(request, 'crear_parqueadero.html')

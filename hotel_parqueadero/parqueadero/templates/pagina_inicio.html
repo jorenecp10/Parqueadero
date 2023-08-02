@@ -9,25 +9,22 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
     <meta http-equiv="refresh" content="30"><!-- Recarga la página cada 60 segundos (1 minuto) -->
+    <style>
+    /* Estilo personalizado para el input de buscar */
+    .form-small {
+        width: 200px; /* Puedes ajustar el ancho según tus necesidades */
+    }
+    </style>
+
 </head>
 <body>
 
 {% include 'navbar.html' %}
- <br>
-         <br>
+
     <div class="container">
 
-        <br>
-         <br>
-         <br>
-         <br>
-         <br>
-         <br>
-         <br>
+        <div class="container mt-5">
 
-
-        <div class="container mt-5 fixed-top">
-             <br>
          <br>
             <div class="row row-cols-1 row-cols-md-2">
                 {% for parqueadero, disponibilidad in disponibilidad_parqueaderos.items %}
@@ -45,6 +42,9 @@
 
     </div>
 
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{% url 'ingresar_vehiculo' %}" class="btn btn-dark btn-lg">Ingresar Vehículo</a>
+    </div>
 
 <div class="container mt-5">
      {% if messages %}
@@ -54,19 +54,18 @@
             {% endfor %}
         </div>
         {% endif %}
-    <form method="post">
-            {% csrf_token %}
-            <div class="mb-2">
-                <label for="placa" class="form-label">Buscar vehículo por placa:</label>
-                <input type="text" name="placa" class="form-control" required>
-            </div>
-            <div class="text-leftr">
-                <button type="submit" class="btn btn-success">Buscar</button>
-            </div>
-            <br>
-        </form>
+   <form method="post">
+    {% csrf_token %}
+    <div class="mb-2">
+        <label for="placa" class="form-label">Buscar vehículo por placa:</label>
+        <input type="text" name="placa" class="form-control form-small" required>
+    </div>
+    <div class="text-left">
+        <button type="submit" class="btn btn-success">Buscar</button>
+    </div>
+</form>
 
-        <br>
+
 
         {% if vehiculos %}
         <form method="post" action="{% url 'eliminar_vehiculos' %}">
@@ -97,7 +96,7 @@
 </div>
             <br>
              <div class="table-responsive">
-                <div class="text-left">
+
                 <button type="submit" class="btn btn-danger">Sacar Vehiculo</button>
             </div>
 
