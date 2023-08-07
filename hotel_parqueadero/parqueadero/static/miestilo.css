@@ -1,0 +1,18 @@
+/* miestilo.css */
+
+/* Cambiar el color del texto de los enlaces del navbar a azul */
+.navbar-nav .nav-link {
+    color: #003166;
+}
+
+/* Cambiar el color del texto del enlace del navbar en estado activo */
+.navbar-nav .nav-link.active {
+    color: #003166;
+}
+/* miestilo.css */
+
+/* Estilos para el contenedor que crea el marco negro */
+.nav-container {
+    border: 2px solid #000; /* Cambiar el color de borde según tus preferencias */
+    padding: 10px; /* Añadir espacio alrededor del contenido */
+}

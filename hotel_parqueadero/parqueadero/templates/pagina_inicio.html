@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+{% load static %}
 <html>
 <head>
     <title>Página de Inicio</title>
@@ -27,6 +29,7 @@
 
          <br>
             <div class="row row-cols-1 row-cols-md-2">
+
                 {% for parqueadero, disponibilidad in disponibilidad_parqueaderos.items %}
                 <div class="col mb-4">
                     <div class="card {% if disponibilidad > 0 %}bg-success{% else %}bg-danger{% endif %} text-white">

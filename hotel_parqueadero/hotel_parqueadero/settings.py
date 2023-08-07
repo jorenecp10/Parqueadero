@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'hotel_parqueadero.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ParqueaderoDB',
+        'NAME': 'parqueaderoDB',
         'USER': 'postgres',
         'PASSWORD': 'root',
         'HOST': 'localhost',
