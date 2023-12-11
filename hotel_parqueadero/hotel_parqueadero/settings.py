@@ -29,7 +29,7 @@ DEBUG = True
 # settings.py
 
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.34.66','10.0.7.26']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '172.16.10.48','10.0.6.84']
 
 
 

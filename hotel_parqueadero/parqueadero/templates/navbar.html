@@ -1,7 +1,7 @@
 {%load static%}
 
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top  "> <!-- Utiliza la clase "fixed-top" para mantener el navbar fijo en la parte superior -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top " style="background-color: #003166;"> <!-- Utiliza la clase "fixed-top" para mantener el navbar fijo en la parte superior -->
     <div class="container-fluid">
 
         <a class="navbar-brand" href="{% url 'pagina_inicio' %}">Disponibilidad</a>
@@ -12,13 +12,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ingresar_vehiculo' %}">Ingresar Vehículo</a>
+                    <a class="nav-link" href="{% url 'ingresar_vehiculo' %}">Ingreso</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'listar_parqueaderos' %}">Parqueaderos</a>
                 </li>
                 <li class="nav-item">
-            <a class="nav-link" href="{% url 'vehiculos_eliminados' %}">Log Salidas</a>
+            <a class="nav-link" href="{% url 'vehiculos_eliminados' %}">Registro de salidas</a>
         </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
